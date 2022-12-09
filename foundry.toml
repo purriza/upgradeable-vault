@@ -1,6 +1,19 @@
 [profile.default]
-src = 'src'
+src = 'src/src-default'
 out = 'out'
 libs = ['lib']
+script = 'script/script-default'
+test = 'test'
+solc-version = '0.8.16'
+fs_permissions = [{access = 'read', path = "./"}]
+verbosity = 4
+
+# [profile.0_5_x]
+# src = 'src/src-0_5_x/'
+# out = 'out'
+# libs = ['lib']
+# script = 'script/script-0_5_x'
+# test = 'test/test-0_5_x'
+# solc-version = '0.5.16'
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
