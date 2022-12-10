@@ -6,7 +6,10 @@ import "@layerzero-labs/contracts/token/oft/OFT.sol";
 contract OmniToken is OFT {
 
     constructor(address _lzEndpoint) OFT("OmniToken", "OMT", _lzEndpoint) {
-       _mint(msg.sender, type(uint256).max);
+        _mint(msg.sender, type(uint256).max);
     }
 
+    function mint() public {
+        _mint(msg.sender, type(uint256).max);
+    }
 }

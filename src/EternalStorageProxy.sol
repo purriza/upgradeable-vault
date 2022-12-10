@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "./EternalStorage.sol";
+import "./EternalStorageV1.sol";
 import "./Proxy.sol";
 
 /**
  * @title EternalStorageProxy
  * @dev This proxy holds the storage of the token contract and delegates every call to the implementation set
  */
-contract EternalStorageProxy is EternalStorage, Proxy {
+contract EternalStorageProxy is EternalStorageV1, Proxy {
 
     address public delegate; // TO-DO Possible to be internal? public for the tests
 

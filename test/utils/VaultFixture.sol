@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "src/WETH9.sol";
+import "src/mocks/WETH9.sol";
 import "src/OmniToken.sol";
 import "src/EternalStorageProxy.sol";
 import "src/Vault.sol";
+import "src/VaultV1.sol";
 
 /*import "lib/forge-std/src/Test.sol";
 import {console} from "lib/forge-std/src/console.sol";*/
@@ -42,7 +43,8 @@ contract VaultFixture is Test {
     // Vault
     //
 
-    Vault public vault;
+    //Vault public vault;
+    VaultV1 public vault;
 
     //
     // Tokens
@@ -82,7 +84,8 @@ contract VaultFixture is Test {
         vm.startPrank(deployer);
 
         // Setup the Vault contract
-        vault = new Vault();
+        //vault = new Vault();
+        vault = new VaultV1();
 
         // Setup the EternalStorageProxy contract
         proxy = new EternalStorageProxy(address(vault));

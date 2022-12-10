@@ -115,8 +115,6 @@ contract Vault is EternalStorage, Initializable {
         // We also need to modify/add Intervals, depending of the Initial/Final Dates of them
         emit LogUint("ENTER DEPOSIT - amount", amount);
         uint256 totalSupplyNewInterval = amount * rewardsMultiplier;
-        uint256[] memory depositsInterval = new uint256[](nextDepositId);
-        uint256[] memory intervalsDeposit = new uint256[](nextIntervalId);
 
         uint256 initialDateNewInterval = block.timestamp;
         uint256 finalDateNewInterval = block.timestamp + (lockingPeriod * 30 * 24 * 60 * 60);
@@ -511,7 +509,7 @@ contract Vault is EternalStorage, Initializable {
     /**
      * @notice Internal function that computes seconds per year
      */
-    function getSecondsPerYear() internal view returns (uint256) {
+    function getSecondsPerYear() internal pure returns (uint256) {
         return (12 * 30 * 24 * 60 * 60); // Months * Days * Hours * Minutes * Seconds
     }
 
