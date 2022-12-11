@@ -1240,7 +1240,7 @@ contract VaultTest is VaultFixture {
             abi.encodeWithSignature(
                 "deposit(uint256,uint256)", 
                 5,
-                12
+                24
             )
         );
         require(success, "Proxy - 1 deposit(5,6): FAILED");
@@ -1255,7 +1255,7 @@ contract VaultTest is VaultFixture {
             abi.encodeWithSignature(
                 "deposit(uint256,uint256)", 
                 5,
-                24
+                12
             )
         );
         require(success, "Proxy - 2 deposit(5,12): FAILED");
@@ -1288,7 +1288,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                1 // TO-DO This was the first Deposit (ID = 0)
+                0 
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
@@ -1304,7 +1304,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                2 // TO-DO This was the first Deposit (ID = 1)
+                1 
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
@@ -1320,7 +1320,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                0 // TO-DO This was the first Deposit (ID = 2)
+                2 
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
@@ -1420,7 +1420,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                3
+                0
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
@@ -1436,7 +1436,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                2
+                1
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
@@ -1452,7 +1452,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                1
+                2
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
@@ -1468,7 +1468,7 @@ contract VaultTest is VaultFixture {
         (success, ) = address(proxy).call(
             abi.encodeWithSignature(
                 "claimRewards(uint256)", 
-                0
+                3
             )
         );
         require(success, "Proxy - claimRewards(3): FAILED");

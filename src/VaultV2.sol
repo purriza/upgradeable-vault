@@ -2,21 +2,27 @@
 pragma solidity ^0.8.16;
 
 import "./OmniToken.sol";
-import "./EternalStorageV1.sol";
+import "./EternalStorageV2.sol";
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin-upgradeable/contracts/proxy/utils/Initializable.sol";
 
+//import "@layerzero-labs/contracts/lzApp/NonBlockingLzApp.sol";
+
 /**
- * @title VaultV1
+ * @title VaultV2
  * @dev Contract that accepts deposits of Uniswap LP tokens and locks them for a period.
  * The user gets rewards in the form of OmniTokens for the deposites LP tokens. 
  * This rewards are distributed proportionally amongs the LP depositors based on their deposits. 
  * Users can claim their pending rewards at any time.
+ * This Vault could be considered Omnichain, since it implements the Layer Zero functionality
  */
-contract VaultV1 is EternalStorageV1, Initializable {
+contract VaultV2 is EternalStorageV2, Initializable {
     using Math for uint256;
+
+    // TO-DO Shoudnt we suppose to not use a constructor whenever we use a Proxy? Use NonBlockingLzApp from the Proxy?
+    //constructor(address _lzEndpoint) NonBlockingLzApp(_lzEndpoint) { }
 
     // TO-DO Not working with the initializer Modifier
     function initialize(uint256 _rewardsIssuancePerYear, address _uniswapLPTokenAddress, address _rewardsTokenAddress) public /*initializer*/ {
@@ -175,7 +181,7 @@ contract VaultV1 is EternalStorageV1, Initializable {
         // Everytime a deposit is withdrawed, we compute the pending rewards for all the active deposits
         computeAllDepositPendingRewards();
 
-        // TO-DO Check if there's a better way to delete, this way is just reseting the index, not removing it from the array (It would be better but will change all deposit IDs)
+        // TO-DO Check if it's a better way to delete, this way is just reseting the index, not removing it from the array (It would be better but will change all deposit IDs)
         delete allDeposits[depositId];
 
         // Update the weightedTotalSupply and totalSupply
@@ -295,9 +301,11 @@ contract VaultV1 is EternalStorageV1, Initializable {
         emit LogUint("allDeposits[depositId].lastTimeClaimed", allDeposits[depositId].lastTimeClaimed);
         uint256 timePassedSinceLastTimeComputedRewards;
 
+        emit LogUint("depositId", depositId);
         for (uint i = 0; i < nextDepositId; i++) {
-            
-            // We need to check if the Deposits overlap or if the rewards are being already computed
+            emit LogUint("i", i);
+
+            // Exit conditions
             bool depositsDontOverlap = allDeposits[i].enterTime > allDeposits[depositId].finishAt || allDeposits[depositId].enterTime > allDeposits[i].finishAt;
             if (depositsDontOverlap || allDeposits[depositId].finishAt == allDeposits[depositId].lastTimeComputedRewards) {
                 // If the deposits don't overlap we update the weighted amount 
@@ -340,7 +348,6 @@ contract VaultV1 is EternalStorageV1, Initializable {
                     }
                     else {
                         emit LogString("i == depositId");
-                        // If lastTimeComputedRewards < finishAt we can compute the rewards
                         if (allDeposits[depositId].lastTimeComputedRewards < block.timestamp.min(allDeposits[i].finishAt)) {
                             emit LogString("allDeposits[depositId].lastTimeComputedRewards < block.timestamp.min(allDeposits[i].finishAt)");
                             rewardsPerDeposit += (rewardsRatePerDeposit * (timePassedSinceLastTimeComputedRewards * rewardsIssuancePerYear)) / ((weightedTotalSupply - totalWeightedSupplyDepositsExpired) * getSecondsPerYear() * MULTIPLIER);

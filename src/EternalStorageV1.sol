@@ -10,6 +10,7 @@ import "./OmniToken.sol";
 
 contract EternalStorageV1 {
 
+    /// @dev Variable to store if the initialize() function has already been called
     bool initialized;
 
     /// @dev Variable to store the owner of the implementation/storage 
@@ -23,6 +24,7 @@ contract EternalStorageV1 {
 
     /// @dev Deposit struct to hold the information from the deposits
     struct Deposit {
+        uint256 id;
         address depositor;
         uint256 amount;
         uint256 enterTime;
@@ -38,6 +40,9 @@ contract EternalStorageV1 {
     /// @dev List to keep track of the deposits
     mapping(uint256 => Deposit) public allDeposits;
     uint256 public nextDepositId;
+
+    /// @dev List to keep track of the deposits in case that they are re-ordered (And their indexes change)
+    mapping(uint256 => uint256) public userDeposits;
 
     /// @dev Constant to avoid divisions resulting in 0
     uint public constant MULTIPLIER = 1e18; // TO-DO Possible to be private?

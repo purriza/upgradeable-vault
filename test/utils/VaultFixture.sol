@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "src/mocks/WETH9.sol";
+import "src/WETH9.sol";
 import "src/OmniToken.sol";
 import "src/EternalStorageProxy.sol";
-import "src/Vault.sol";
 import "src/VaultV1.sol";
-
-/*import "lib/forge-std/src/Test.sol";
-import {console} from "lib/forge-std/src/console.sol";*/
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
@@ -43,7 +39,6 @@ contract VaultFixture is Test {
     // Vault
     //
 
-    //Vault public vault;
     VaultV1 public vault;
 
     //
@@ -52,7 +47,7 @@ contract VaultFixture is Test {
 
     WETH9 public weth;
     OmniToken public token;
-    //UniswapV2ERC20 public uniswapLPToken;
+    OmniToken public bnbToken;
     address public uniswapLPTokenAddress;
 
     // Deployer address
@@ -84,7 +79,6 @@ contract VaultFixture is Test {
         vm.startPrank(deployer);
 
         // Setup the Vault contract
-        //vault = new Vault();
         vault = new VaultV1();
 
         // Setup the EternalStorageProxy contract
@@ -93,8 +87,17 @@ contract VaultFixture is Test {
         // Setup Token contracts
         weth = new WETH9();
         //token = OmniToken(proxy.rewardsToken());
+
+        // LAYER ZERO OMNICHAIN
+
         // Goerli Testnet Endpoint
         token = new OmniToken(0xbfD2135BFfbb0B5378b56643c2Df8a87552Bfa23);
+        token.mint(); // TO-DO Token only mintable from the Vault
+
+        // BNB Testnet Endpoint
+        bnbToken = new OmniToken(0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1);
+        bnbToken.mint();
+
         vm.label(address(weth), "WETH");
         vm.label(address(token), "OMT");
 
