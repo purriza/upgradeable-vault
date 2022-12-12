@@ -9,6 +9,16 @@ contract VaultTest is VaultFixture {
         super.setUp();
     }
 
+    // *** Omnitoken ***
+    function test_mint() public {
+        vm.startPrank(deployer);
+
+        bnbToken.mint();
+        assertGt(bnbToken.balanceOf(deployer), 0);
+
+        vm.stopPrank();
+    }
+    
     // *** Proxy ***
 
     function test_upgradeDelegate() public {
@@ -452,7 +462,7 @@ contract VaultTest is VaultFixture {
         require(success, "Proxy - claimRewards(0): FAILED");
         //uint256 depositor1BalanceAfter = token.balanceOf(depositor1);
         //assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 25
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
 
         vm.stopPrank();
@@ -470,7 +480,7 @@ contract VaultTest is VaultFixture {
         require(success, "Proxy - claimRewards(1): FAILED");
         //uint256 depositor2BalanceAfter = token.balanceOf(depositor2);
         //assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 25
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -540,7 +550,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 20
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -556,7 +566,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 100
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -642,7 +652,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 6
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -658,7 +668,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 26 
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -674,7 +684,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
-        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3);
+        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3); // 136
         assertGt(depositor3BalanceAfter, depositor3BalanceBefore);
 
         vm.stopPrank();
@@ -774,7 +784,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 84
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -790,7 +800,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 348
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -806,7 +816,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
-        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3);
+        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3); // 1536
         assertGt(depositor3BalanceAfter, depositor3BalanceBefore);
 
         vm.stopPrank();
@@ -822,7 +832,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(3): FAILED");
-        uint256 depositor4BalanceAfter = proxy.rewardsToken().balanceOf(depositor4);
+        uint256 depositor4BalanceAfter = proxy.rewardsToken().balanceOf(depositor4); // 8112
         assertGt(depositor4BalanceAfter, depositor4BalanceBefore);
 
         vm.stopPrank();
@@ -894,7 +904,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 45
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -910,7 +920,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 45
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -982,7 +992,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 40
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -998,7 +1008,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 120
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -1088,7 +1098,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 200
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -1104,7 +1114,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 475
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -1120,13 +1130,13 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
-        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3);
+        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3); // 525
         assertGt(depositor3BalanceAfter, depositor3BalanceBefore);
 
         vm.stopPrank();
     }
 
-    // 2 Depositors - Same enterDate - Different lockingPeriod (2 years and 4 years)
+    // 2 Depositors - Same enterDate - Different lockingPeriod (Claiming rewards many times)
     function test_example8() public {
         // Save initial balances
         uint256 depositor1BalanceBefore = proxy.rewardsToken().balanceOf(depositor1);
@@ -1176,7 +1186,7 @@ contract VaultTest is VaultFixture {
         vm.stopPrank();
 
 
-        vm.warp(block.timestamp + 1440 days); // 4 years
+        vm.warp(block.timestamp + 360 days); // 1 year
 
 
         // Depositor 1
@@ -1190,7 +1200,165 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfterR1 = proxy.rewardsToken().balanceOf(depositor1); // 40
+        assertGt(depositor1BalanceAfterR1, depositor1BalanceBefore);
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                1
+            )
+        );
+        require(success, "Proxy - claimRewards(1): FAILED");
+        uint256 depositor2BalanceAfterR1 = proxy.rewardsToken().balanceOf(depositor2); // 80
+        assertGt(depositor2BalanceAfterR1, depositor2BalanceBefore);
+
+        vm.stopPrank();
+
+
+        vm.warp(block.timestamp + 360 days); // 1 year
+
+
+        // Depositor 1
+        vm.startPrank(depositor1);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                0
+            )
+        );
+        require(success, "Proxy - claimRewards(0): FAILED");
+        uint256 depositor1BalanceAfterR2 = proxy.rewardsToken().balanceOf(depositor1); // 80
+        assertGt(depositor1BalanceAfterR2, depositor1BalanceAfterR1);
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                1
+            )
+        );
+        require(success, "Proxy - claimRewards(1): FAILED");
+        uint256 depositor2BalanceAfterR2 = proxy.rewardsToken().balanceOf(depositor2); // 160
+        assertGt(depositor2BalanceAfterR2, depositor2BalanceAfterR1);
+
+        vm.stopPrank();
+
+
+        vm.warp(block.timestamp + 720 days); // 2 years
+
+
+        // Depositor 1
+        // Unhappy path - Claiming rewards when there are no pending rewards
+        vm.startPrank(depositor1);
+        
+        token.approve(address(proxy), 100);
+        vm.expectRevert();
+        (bool status, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                0
+            )
+        );
+        assertTrue(status, "expectRevert: call did not revert");
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                1
+            )
+        );
+        require(success, "Proxy - claimRewards(1): FAILED");
+        uint256 depositor2BalanceAfterR3 = proxy.rewardsToken().balanceOf(depositor2); // 400
+        assertGt(depositor2BalanceAfterR3, depositor2BalanceAfterR2);
+
+        vm.stopPrank();
+    }
+
+    // 2 Depositors - Same enterDate - Different lockingPeriod (Claiming rewards a lot of time after the locking period has ended)
+    function test_example9() public {
+        // Save initial balances
+        uint256 depositor1BalanceBefore = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor2BalanceBefore = proxy.rewardsToken().balanceOf(depositor2);
+        
+        // Deployer
+        vm.startPrank(deployer);
+
+        (bool success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "updateRewardsIssuancePerYear(uint256)", 
+                120
+            )
+        );
+        require(success, "Proxy - updateRewardsIssuancePerYear: FAILED");
+
+        vm.stopPrank();
+
+        // Depositor 1
+        vm.startPrank(depositor1);
+        
+        (, bytes memory data) = uniswapLPTokenAddress.call(abi.encodeWithSignature("approve(address,uint256)", address(proxy), 5));
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "deposit(uint256,uint256)", 
+                5,
+                24
+            )
+        );
+        require(success, "Proxy - 1 deposit(5,6): FAILED");
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        (, data) = uniswapLPTokenAddress.call(abi.encodeWithSignature("approve(address,uint256)", address(proxy), 5));
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "deposit(uint256,uint256)", 
+                5,
+                48
+            )
+        );
+        require(success, "Proxy - 2 deposit(5,6): FAILED");
+
+        vm.stopPrank();
+
+
+        vm.warp(block.timestamp + 3600 days); // 10 years
+
+
+        // Depositor 1
+        vm.startPrank(depositor1);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                0
+            )
+        );
+        require(success, "Proxy - claimRewards(0): FAILED");
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 80
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -1206,14 +1374,100 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 400
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
     }
 
-    // 3 Depositors - Same enterDate - Different lockingPeriod - Unordered by end date
-    function test_example9() public {
+    // 2 Depositors - Same enterDate - Different lockingPeriod - Unordered by end date (Same expected results as example2 but in different order)
+    function test_example10() public {
+        // Save initial balances
+        uint256 depositor1BalanceBefore = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor2BalanceBefore = proxy.rewardsToken().balanceOf(depositor2);
+        
+        // Deployer
+        vm.startPrank(deployer);
+
+        (bool success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "updateRewardsIssuancePerYear(uint256)", 
+                120
+            )
+        );
+        require(success, "Proxy - updateRewardsIssuancePerYear: FAILED");
+
+        vm.stopPrank();
+
+        // Depositor 1
+        vm.startPrank(depositor1);
+        
+        (, bytes memory data) = uniswapLPTokenAddress.call(abi.encodeWithSignature("approve(address,uint256)", address(proxy), 5));
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "deposit(uint256,uint256)", 
+                5,
+                12
+            )
+        );
+        require(success, "Proxy - 1 deposit(5,6): FAILED");
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        (, data) = uniswapLPTokenAddress.call(abi.encodeWithSignature("approve(address,uint256)", address(proxy), 5));
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "deposit(uint256,uint256)", 
+                5,
+                6
+            )
+        );
+        require(success, "Proxy - 2 deposit(5,6): FAILED");
+
+        vm.stopPrank();
+
+
+        vm.warp(block.timestamp + 360 days); // 1 year
+
+
+        // Depositor 1
+        vm.startPrank(depositor1);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                0
+            )
+        );
+        require(success, "Proxy - claimRewards(0): FAILED");
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 100
+        assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
+        
+        vm.stopPrank();
+
+        // Depositor 2
+        vm.startPrank(depositor2);
+        
+        token.approve(address(proxy), 100);
+        (success, ) = address(proxy).call(
+            abi.encodeWithSignature(
+                "claimRewards(uint256)", 
+                1
+            )
+        );
+        require(success, "Proxy - claimRewards(1): FAILED");
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 20
+        assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
+
+        vm.stopPrank();
+    }
+
+    // 3 Depositors - Same enterDate - Different lockingPeriod - Unordered by end date (Same expected results as example3 but in different order)
+    function test_example11() public {
         // Save initial balances
         uint256 depositor1BalanceBefore = proxy.rewardsToken().balanceOf(depositor1);
         uint256 depositor2BalanceBefore = proxy.rewardsToken().balanceOf(depositor2);
@@ -1292,7 +1546,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 136
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -1308,7 +1562,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 26
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -1324,14 +1578,14 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
-        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3);
+        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3); // 6
         assertGt(depositor3BalanceAfter, depositor3BalanceBefore);
 
         vm.stopPrank();
     }
 
-    // 3 Depositors - Same enterDate - Different lockingPeriod - Unordered by end date
-    function test_example10() public {
+    // 4 Depositors - Same enterDate - Different lockingPeriod - Unordered by end date (Same expected results as example4 but in different order)
+    function test_example12() public {
         // Save initial balances
         uint256 depositor1BalanceBefore = proxy.rewardsToken().balanceOf(depositor1);
         uint256 depositor2BalanceBefore = proxy.rewardsToken().balanceOf(depositor2);
@@ -1424,7 +1678,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(0): FAILED");
-        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1);
+        uint256 depositor1BalanceAfter = proxy.rewardsToken().balanceOf(depositor1); // 8112
         assertGt(depositor1BalanceAfter, depositor1BalanceBefore);
         
         vm.stopPrank();
@@ -1440,7 +1694,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(1): FAILED");
-        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2);
+        uint256 depositor2BalanceAfter = proxy.rewardsToken().balanceOf(depositor2); // 1536
         assertGt(depositor2BalanceAfter, depositor2BalanceBefore);
 
         vm.stopPrank();
@@ -1456,7 +1710,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(2): FAILED");
-        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3);
+        uint256 depositor3BalanceAfter = proxy.rewardsToken().balanceOf(depositor3); // 348
         assertGt(depositor3BalanceAfter, depositor3BalanceBefore);
 
         vm.stopPrank();
@@ -1472,7 +1726,7 @@ contract VaultTest is VaultFixture {
             )
         );
         require(success, "Proxy - claimRewards(3): FAILED");
-        uint256 depositor4BalanceAfter = proxy.rewardsToken().balanceOf(depositor4);
+        uint256 depositor4BalanceAfter = proxy.rewardsToken().balanceOf(depositor4); // 84
         assertGt(depositor4BalanceAfter, depositor4BalanceBefore);
 
         vm.stopPrank();

@@ -96,7 +96,7 @@ contract VaultV1 is EternalStorageV1, Initializable {
 
         userDeposits[nextDepositId] = nextDepositId;
 
-        // We add the Deposit
+        // We add the Deposit (It will be moved on the sort function, it's just to have the correct number of Deposits on the mapping)
         allDeposits[nextDepositId].id = nextDepositId;
         allDeposits[nextDepositId].depositor = msg.sender;
         allDeposits[nextDepositId].amount = amount;
@@ -108,7 +108,8 @@ contract VaultV1 is EternalStorageV1, Initializable {
         allDeposits[nextDepositId].pendingRewards = 0;
         allDeposits[nextDepositId].claimedRewards = 0;
         allDeposits[nextDepositId].completed = false;
-        // We order the allDeposits mapping (taking into account that the last Deposit is the new one)
+        
+        // We order the allDeposits mapping 
         if (nextDepositId > 0) {
             insertDepositByFinishAt(allDeposits[nextDepositId], nextDepositId/2);
         }
@@ -118,21 +119,6 @@ contract VaultV1 is EternalStorageV1, Initializable {
         totalSupply = totalSupply + amount;
 
         nextDepositId++;
-
-        emit LogString("DEPOSITS LOOP");
-        for (uint256 v = 0; v < nextDepositId; v++) {
-            emit LogUint("DEPOSIT - Deposit ID", v);
-            emit LogAddress("DEPOSIT - allDeposits[v].depositor", allDeposits[v].depositor);
-            emit LogUint("DEPOSIT - allDeposits[v].enterTime", allDeposits[v].enterTime);
-            emit LogUint("DEPOSIT - allDeposits[v].lockingPeriod", allDeposits[v].lockingPeriod);
-            emit LogUint("DEPOSIT - allDeposits[v].finishAt", allDeposits[v].finishAt);
-        }
-
-        emit LogString("USER DEPOSITS LOOP");
-        for (uint256 w = 0; w < nextDepositId; w++) {
-            emit LogUint("DEPOSIT - User Deposit ID", w);
-            emit LogUint("DEPOSIT - userDeposits[w]", userDeposits[w]);
-        }
 
         emit Deposited(msg.sender, amount, lockingPeriod, block.timestamp);
     }
@@ -226,16 +212,20 @@ contract VaultV1 is EternalStorageV1, Initializable {
      * @notice Internal function that adds a new Deposit to the allDeposits mapping keeping it ordered by the finishAt field of the Deposits
      * @param newDeposit Deposit to be inserted
      * @param index Index of the mapping where the Deposit will be inserted
+     * @dev This function implements a sort using an algorithm in between the traditional merge and quick sort
      */
     function insertDepositByFinishAt(Deposit memory newDeposit, uint256 index) internal {
         // End conditions
+        // If the Deposit has a bigger finishAt than the last Deposit stored -> It has to be at the last place of the mapping
         if (index == nextDepositId && newDeposit.finishAt >= allDeposits[index].finishAt) {
             insertDepositAtIndex(newDeposit, index);
         }
+        // If the Deposit has a lower finishAt than the first Deposit stored -> It has to be at the first place of the mapping
         else if (index == 0 && newDeposit.finishAt < allDeposits[index].finishAt) {
             insertDepositAtIndex(newDeposit, index);
         }
-        else if (newDeposit.finishAt >= allDeposits[index].finishAt && (index == 0 || newDeposit.finishAt < allDeposits[index-1].finishAt)) {
+        // If the Deposit has a finishAt value between the index Deposit and the next one -> It has at be on index + 1
+        else if (newDeposit.finishAt >= allDeposits[index].finishAt && newDeposit.finishAt <= allDeposits[index+1].finishAt) {
             insertDepositAtIndex(newDeposit, index+1);
         }
         else {
@@ -258,9 +248,11 @@ contract VaultV1 is EternalStorageV1, Initializable {
      * @param index Index of the mapping where the Deposit will be inserted
      */
     function insertDepositAtIndex(Deposit memory newDeposit, uint256 index) internal {
-        // The newDeposit is already inserted on index nextDepositId, no risk of lose any Deposit
+        // Since the newDeposit is inserted on the last index of the mapping, we can move every Deposit from index to nextDepositId one position up
         for (uint256 i = nextDepositId; i > index; i--) {
             allDeposits[i] = allDeposits[i-1];
+
+            // We have to keep track of the new indexes of the Deposits, in order to be able to identify them whenever the Users want to claim rewards or withdraw them
             userDeposits[allDeposits[i-1].id] = i;
         }
         allDeposits[index] = newDeposit;
@@ -287,12 +279,6 @@ contract VaultV1 is EternalStorageV1, Initializable {
         uint256 rewardsPerDeposit = 0;
 
         uint256 rewardsRatePerDeposit = (allDeposits[depositId].amount * allDeposits[depositId].rewardsMultiplier) * MULTIPLIER;
-        emit LogUint("rewardsRatePerDeposit", rewardsRatePerDeposit);
-
-        emit LogUint("block.timestamp", block.timestamp);
-        emit LogUint("allDeposits[depositId].finishAt", allDeposits[depositId].finishAt);
-        emit LogUint("allDeposits[depositId].lastTimeComputedRewards", allDeposits[depositId].lastTimeComputedRewards);
-        emit LogUint("allDeposits[depositId].lastTimeClaimed", allDeposits[depositId].lastTimeClaimed);
         uint256 timePassedSinceLastTimeComputedRewards;
 
         for (uint i = 0; i < nextDepositId; i++) {
@@ -300,61 +286,42 @@ contract VaultV1 is EternalStorageV1, Initializable {
             // We need to check if the Deposits overlap or if the rewards are being already computed
             bool depositsDontOverlap = allDeposits[i].enterTime > allDeposits[depositId].finishAt || allDeposits[depositId].enterTime > allDeposits[i].finishAt;
             if (depositsDontOverlap || allDeposits[depositId].finishAt == allDeposits[depositId].lastTimeComputedRewards) {
-                // If the deposits don't overlap we update the weighted amount 
+                // If the deposits don't overlap we update the weighted supply 
                 totalWeightedSupplyDepositsExpired += allDeposits[i].amount * allDeposits[i].rewardsMultiplier;
             } 
             else {
-                // For every Deposit we have to compute the time between our Deposit lastTimeComputedRewards and the actual/end time of the analyzed Deposit
-                emit LogUint("allDeposits[i].lastTimeComputedRewards", allDeposits[depositId].lastTimeComputedRewards);
-                emit LogUint("allDeposits[i].finishAt", allDeposits[i].finishAt);
-                emit LogUint("allDeposits[depositId].enterTime", allDeposits[depositId].enterTime);
-                emit LogUint("block.timestamp.min(allDeposits[i].finishAt)", block.timestamp.min(allDeposits[i].finishAt));
-                emit LogUint("allDeposits[depositId].enterTime.max(allDeposits[depositId].lastTimeComputedRewards)", allDeposits[depositId].enterTime.max(allDeposits[depositId].lastTimeComputedRewards));
-
-                // If rewards have been computed after the analyzed deposit finishAt it means that the Deposit has already expired, we update the weighted amount 
+                // If rewards have been computed after the analyzed deposit finishAt it means that the Deposit has already expired, we update the weighted supply 
                 if (allDeposits[depositId].lastTimeComputedRewards >= allDeposits[i].finishAt) {
-
                     totalWeightedSupplyDepositsExpired += allDeposits[i].amount * allDeposits[i].rewardsMultiplier;
                 }
                 else {
+                    // We have to compute the time between our Deposit lastTimeComputedRewards and the actual/end time of the analyzed Deposit
                     timePassedSinceLastTimeComputedRewards = block.timestamp.min(allDeposits[i].finishAt) - allDeposits[depositId].enterTime.max(allDeposits[depositId].lastTimeComputedRewards);
-                    emit LogUint("timePassedSinceLastTimeComputedRewards", timePassedSinceLastTimeComputedRewards);
 
                     // We have to do a different treatment whenever we reach the Deposit itself
                     if (i != depositId) {
                         // We compute the rewards per Deposit taking into account the possible expired Deposits
-                        emit LogUint("weightedTotalSupply", weightedTotalSupply);
                         rewardsPerDeposit += (rewardsRatePerDeposit * (timePassedSinceLastTimeComputedRewards * rewardsIssuancePerYear)) / ((weightedTotalSupply - totalWeightedSupplyDepositsExpired) * getSecondsPerYear() * MULTIPLIER);
-                        emit LogUint("rewardsPerDeposit", rewardsPerDeposit);
 
-                        // We update our Deposit lastTimeComputedRewards
+                        // We update our Deposit lastTimeComputedRewards, this let us know (line 316) if we have reach our Deposit finishAt from another Deposit
                         allDeposits[depositId].lastTimeComputedRewards = block.timestamp.min(allDeposits[i].finishAt);
-                        emit LogUint("allDeposits[depositId].lastTimeComputedRewards", allDeposits[depositId].lastTimeComputedRewards);
 
                         // If the deposit has expired we update the totalWeightedSupplyDepositsExpired
                         if (allDeposits[i].finishAt <= block.timestamp) {
-                            emit LogString("allDeposits[i].finishAt <= block.timestamp");
                             totalWeightedSupplyDepositsExpired += allDeposits[i].amount * allDeposits[i].rewardsMultiplier;
-                            emit LogUint("totalWeightedSupplyDepositsExpired", totalWeightedSupplyDepositsExpired);
                         }
                     }
                     else {
-                        emit LogString("i == depositId");
-                        // If lastTimeComputedRewards < finishAt we can compute the rewards
+                        // If we haven't reach our Deposit finishAt or block.timestamp we can add the rewards
                         if (allDeposits[depositId].lastTimeComputedRewards < block.timestamp.min(allDeposits[i].finishAt)) {
-                            emit LogString("allDeposits[depositId].lastTimeComputedRewards < block.timestamp.min(allDeposits[i].finishAt)");
                             rewardsPerDeposit += (rewardsRatePerDeposit * (timePassedSinceLastTimeComputedRewards * rewardsIssuancePerYear)) / ((weightedTotalSupply - totalWeightedSupplyDepositsExpired) * getSecondsPerYear() * MULTIPLIER);
-                            emit LogUint("rewardsPerDeposit", rewardsPerDeposit);
-
                             allDeposits[depositId].lastTimeComputedRewards = block.timestamp.min(allDeposits[i].finishAt);
                         }
                     } 
                     
+                    // Update the pending rewards of the Deposit and reset the rewardsPerDeposit variable
                     allDeposits[depositId].pendingRewards += rewardsPerDeposit;
                     rewardsPerDeposit = 0;
-                    emit LogUint("depositId", depositId);
-                    emit LogUint("allDeposits[depositId].pendingRewards", allDeposits[depositId].pendingRewards);
-                    emit LogUint("allDeposits[depositId].lastTimeComputedRewards", allDeposits[depositId].lastTimeComputedRewards);
                 }
             }
         }

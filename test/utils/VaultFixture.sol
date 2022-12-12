@@ -58,6 +58,7 @@ contract VaultFixture is Test {
     address public depositor2 = vm.addr(1502);
     address public depositor3 = vm.addr(1503);
     address public depositor4 = vm.addr(1504);
+    address public depositor5 = vm.addr(1504);
 
     function setUp() public virtual {
         // Label addresses
@@ -66,6 +67,7 @@ contract VaultFixture is Test {
         vm.label(depositor2, "Depositor 2");
         vm.label(depositor3, "Depositor 3");
         vm.label(depositor4, "Depositor 4");
+        vm.label(depositor5, "Depositor 5");
 
         // Fund deployer wallet
         vm.deal(deployer, 1000 ether);
@@ -75,6 +77,7 @@ contract VaultFixture is Test {
         vm.deal(depositor2, 5 ether);
         vm.deal(depositor3, 5 ether);
         vm.deal(depositor4, 5 ether);
+        vm.deal(depositor5, 5 ether);
 
         vm.startPrank(deployer);
 
@@ -96,7 +99,7 @@ contract VaultFixture is Test {
 
         // BNB Testnet Endpoint
         bnbToken = new OmniToken(0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1);
-        bnbToken.mint();
+        //bnbToken.mint();
 
         vm.label(address(weth), "WETH");
         vm.label(address(token), "OMT");
